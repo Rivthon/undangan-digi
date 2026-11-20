@@ -1,0 +1,15 @@
+@extends('admin.layouts.app')
+@section('title', 'Atur Undangan')
+@section('heading', 'Atur Undangan')
+@section('subheading', 'Ubah informasi undangan dan tautan publik milik Anda.')
+@section('action')<a href="{{ route('invitation.show', $invitation) }}" target="_blank" class="primary-button">Preview ↗</a>@endsection
+@section('content')
+<section class="form-panel invitation-form"><form method="POST" action="{{ route('admin.invitation.update') }}" class="admin-form">@csrf @method('PUT')
+    @if($errors->any())<div class="alert error">{{ $errors->first() }}</div>@endif
+    <h2>Tautan undangan</h2><label>Slug URL<div class="input-prefix"><span>/i/</span><input name="slug" value="{{ old('slug', $invitation->slug) }}" required></div></label>
+    <h2>Mempelai wanita</h2><div class="form-grid"><label>Nama lengkap<input name="bride_name" value="{{ old('bride_name', $invitation->bride_name) }}" required></label><label>Nama panggilan<input name="bride_short_name" value="{{ old('bride_short_name', $invitation->bride_short_name) }}" required></label><label>Nama orang tua<input name="bride_parents" value="{{ old('bride_parents', $invitation->bride_parents) }}" required></label><label>Instagram<input name="bride_instagram" value="{{ old('bride_instagram', $invitation->bride_instagram) }}"></label></div>
+    <h2>Mempelai pria</h2><div class="form-grid"><label>Nama lengkap<input name="groom_name" value="{{ old('groom_name', $invitation->groom_name) }}" required></label><label>Nama panggilan<input name="groom_short_name" value="{{ old('groom_short_name', $invitation->groom_short_name) }}" required></label><label>Nama orang tua<input name="groom_parents" value="{{ old('groom_parents', $invitation->groom_parents) }}" required></label><label>Instagram<input name="groom_instagram" value="{{ old('groom_instagram', $invitation->groom_instagram) }}"></label></div>
+    <h2>Detail acara</h2><div class="form-grid"><label>Tanggal & waktu utama<input type="datetime-local" name="event_at" value="{{ old('event_at', $invitation->event_at->format('Y-m-d\TH:i')) }}" required></label><label>Teks tanggal<input name="display_date" value="{{ old('display_date', $invitation->display_date) }}" required></label><label>Waktu akad<input name="akad_time" value="{{ old('akad_time', $invitation->akad_time) }}" required></label><label>Waktu resepsi<input name="reception_time" value="{{ old('reception_time', $invitation->reception_time) }}" required></label><label>Nama lokasi<input name="venue" value="{{ old('venue', $invitation->venue) }}" required></label><label>Link Google Maps<input type="url" name="maps_url" value="{{ old('maps_url', $invitation->maps_url) }}" required></label></div><label>Alamat lengkap<textarea name="address" rows="3" required>{{ old('address', $invitation->address) }}</textarea></label><label>Kutipan<textarea name="quote" rows="4" required>{{ old('quote', $invitation->quote) }}</textarea></label>
+    <div class="form-actions"><button class="primary-button" type="submit">Simpan Undangan</button></div>
+</form></section>
+@endsection

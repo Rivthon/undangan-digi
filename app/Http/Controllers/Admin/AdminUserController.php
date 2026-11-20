@@ -7,6 +7,8 @@ use App\Http\Requests\Admin\StoreAdminUserRequest;
 use App\Http\Requests\Admin\UpdateAdminUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminUserController extends Controller
@@ -25,12 +27,27 @@ class AdminUserController extends Controller
 
     public function store(StoreAdminUserRequest $request): RedirectResponse
     {
-        User::create([
-            ...$request->safe()->only(['name', 'email', 'password', 'is_active']),
-            'role' => 'admin',
-            'payment_status' => 'paid',
-            'paid_at' => now(),
-        ]);
+        DB::transaction(function () use ($request): void {
+            $user = User::create([
+                ...$request->safe()->only(['name', 'email', 'password', 'is_active']),
+                'role' => 'admin',
+                'payment_status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+            $defaults = config('invitation');
+            $user->invitation()->create([
+                'slug' => Str::slug($request->string('name')).'-'.$user->id,
+                'bride_name' => $defaults['bride']['name'], 'bride_short_name' => $defaults['bride']['short_name'],
+                'bride_parents' => $defaults['bride']['parents'], 'bride_instagram' => $defaults['bride']['instagram'],
+                'groom_name' => $defaults['groom']['name'], 'groom_short_name' => $defaults['groom']['short_name'],
+                'groom_parents' => $defaults['groom']['parents'], 'groom_instagram' => $defaults['groom']['instagram'],
+                'event_at' => $defaults['date'], 'display_date' => $defaults['display_date'],
+                'akad_time' => $defaults['akad'], 'reception_time' => $defaults['reception'],
+                'venue' => $defaults['venue'], 'address' => $defaults['address'],
+                'maps_url' => $defaults['maps_url'], 'quote' => $defaults['quote'],
+            ]);
+        });
 
         return redirect()->route('admin.users.index')->with('success', 'Akun admin pelanggan berhasil dibuat.');
     }

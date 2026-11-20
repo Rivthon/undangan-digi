@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\Invitation;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    use DatabaseTransactions;
+    use LazilyRefreshDatabase;
 
     /**
      * A basic test example.
@@ -23,7 +24,9 @@ class ExampleTest extends TestCase
 
     public function test_guest_can_submit_rsvp(): void
     {
-        $response = $this->post('/rsvp', [
+        $invitation = Invitation::factory()->create();
+
+        $response = $this->post(route('invitation.rsvp', $invitation), [
             'name' => 'Tamu Test',
             'attendance' => 'hadir',
             'guest_count' => 2,
@@ -32,6 +35,6 @@ class ExampleTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        $this->assertDatabaseHas('guest_messages', ['name' => 'Tamu Test']);
+        $this->assertDatabaseHas('guest_messages', ['invitation_id' => $invitation->id, 'name' => 'Tamu Test']);
     }
 }

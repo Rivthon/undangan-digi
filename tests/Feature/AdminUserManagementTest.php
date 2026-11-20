@@ -33,6 +33,8 @@ class AdminUserManagementTest extends TestCase
             'payment_status' => 'paid',
             'is_active' => true,
         ]);
+        $customer = User::query()->where('email', 'pelanggan@example.com')->firstOrFail();
+        $this->assertDatabaseHas('invitations', ['user_id' => $customer->id]);
     }
 
     public function test_regular_admin_cannot_access_admin_account_management(): void

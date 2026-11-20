@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-tenant.css') }}">
 </head>
 <body>
     <div class="admin-shell">
@@ -17,8 +18,10 @@
                 <a href="{{ route('admin.dashboard') }}" @class(['active' => request()->routeIs('admin.dashboard')])>⌂ <span>Dashboard</span></a>
                 @can('manage-admins')
                     <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users.*')])>♙ <span>Admin Pelanggan</span></a>
+                @else
+                    <a href="{{ route('admin.invitation.edit') }}" @class(['active' => request()->routeIs('admin.invitation.*')])>✎ <span>Atur Undangan</span></a>
                 @endcan
-                <a href="{{ route('invitation.show') }}" target="_blank">↗ <span>Lihat Undangan</span></a>
+                <a href="{{ auth()->user()->isSuperAdmin() ? route('invitation.demo') : route('invitation.show', auth()->user()->invitation) }}" target="_blank">↗ <span>Lihat Undangan</span></a>
             </nav>
             <div class="sidebar-user">
                 <div class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</div>

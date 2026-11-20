@@ -2,23 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GuestMessage;
+use App\Models\Invitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class InvitationController extends Controller
 {
-    public function show(Request $request): View
+    public function demo(Request $request): View
     {
         return view('invitation', [
             'invitation' => config('invitation'),
+            'invitationModel' => null,
             'guestName' => trim((string) $request->query('to', 'Tamu Undangan')),
-            'messages' => GuestMessage::query()->latest()->take(20)->get(),
+            'messages' => collect(),
         ]);
     }
 
-    public function rsvp(Request $request): RedirectResponse
+    public function show(Invitation $invitation, Request $request): View
+    {
+        return view('invitation', [
+            'invitation' => $invitation->displayData(),
+            'invitationModel' => $invitation,
+            'guestName' => trim((string) $request->query('to', 'Tamu Undangan')),
+            'messages' => $invitation->guestMessages()->latest()->take(20)->get(),
+        ]);
+    }
+
+    public function rsvp(Invitation $invitation, Request $request): RedirectResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:80'],
@@ -27,7 +38,7 @@ class InvitationController extends Controller
             'message' => ['required', 'string', 'max:500'],
         ]);
 
-        GuestMessage::create($data);
+        $invitation->guestMessages()->create($data);
 
         return back()->with('success', 'Terima kasih, konfirmasi dan ucapan Anda sudah tersimpan.');
     }

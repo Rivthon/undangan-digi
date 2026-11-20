@@ -122,7 +122,8 @@
                     <div class="alert">{{ session('success') }}</div>
                 @endif
 
-                <form action="{{ route('invitation.rsvp') }}" method="POST" class="rsvp-form">
+                @if ($invitationModel)
+                <form action="{{ route('invitation.rsvp', $invitationModel) }}" method="POST" class="rsvp-form">
                     @csrf
                     <label>Nama lengkap<input type="text" name="name" value="{{ old('name', $guestName !== 'Tamu Undangan' ? $guestName : '') }}" required maxlength="80" placeholder="Masukkan nama Anda"></label>
                     <label>Konfirmasi kehadiran
@@ -138,6 +139,9 @@
                     @if ($errors->any())<div class="error">{{ $errors->first() }}</div>@endif
                     <button class="button" type="submit">Kirim Konfirmasi</button>
                 </form>
+                @else
+                    <div class="alert">Ini adalah halaman demo. RSVP tersedia pada tautan undangan pelanggan.</div>
+                @endif
             </div>
 
             @if ($messages->isNotEmpty())

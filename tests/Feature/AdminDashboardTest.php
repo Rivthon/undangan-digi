@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\GuestMessage;
+use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
@@ -14,7 +15,9 @@ class AdminDashboardTest extends TestCase
     public function test_admin_can_see_rsvp_statistics_and_escaped_message(): void
     {
         $admin = User::factory()->admin()->create();
+        $invitation = Invitation::factory()->for($admin)->create();
         GuestMessage::factory()->create([
+            'invitation_id' => $invitation->id,
             'name' => '<script>alert("xss")</script>',
             'attendance' => 'hadir',
             'guest_count' => 3,
@@ -31,7 +34,8 @@ class AdminDashboardTest extends TestCase
     public function test_admin_can_delete_rsvp(): void
     {
         $admin = User::factory()->admin()->create();
-        $message = GuestMessage::factory()->create();
+        $invitation = Invitation::factory()->for($admin)->create();
+        $message = GuestMessage::factory()->for($invitation)->create();
 
         $response = $this->actingAs($admin)->delete(route('admin.rsvp.destroy', $message));
 

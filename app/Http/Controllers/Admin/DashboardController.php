@@ -3,22 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\GuestMessage;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(Request $request): View
     {
+        if ($request->user()->isSuperAdmin()) {
+            return view('admin.super-dashboard', [
+                'statistics' => [
+                    'admins' => User::where('role', 'admin')->count(),
+                    'activeAdmins' => User::where('role', 'admin')->where('is_active', true)->count(),
+                    'paidAdmins' => User::where('role', 'admin')->where('payment_status', 'paid')->count(),
+                ],
+                'users' => User::query()->where('role', 'admin')->latest()->take(8)->get(),
+            ]);
+        }
+
+        $invitation = $request->user()->invitation()->firstOrFail();
+
         return view('admin.dashboard', [
+            'invitation' => $invitation,
             'statistics' => [
-                'responses' => GuestMessage::count(),
-                'attending' => GuestMessage::where('attendance', 'hadir')->sum('guest_count'),
-                'notAttending' => GuestMessage::where('attendance', 'tidak_hadir')->count(),
-                'admins' => User::where('role', 'admin')->count(),
+                'responses' => $invitation->guestMessages()->count(),
+                'attending' => $invitation->guestMessages()->where('attendance', 'hadir')->sum('guest_count'),
+                'notAttending' => $invitation->guestMessages()->where('attendance', 'tidak_hadir')->count(),
             ],
-            'messages' => GuestMessage::query()->latest()->paginate(10),
+            'messages' => $invitation->guestMessages()->latest()->paginate(10),
         ]);
     }
 }

@@ -3,11 +3,14 @@
 @section('heading', 'Dashboard')
 @section('subheading', 'Ringkasan RSVP dan aktivitas undangan Anda.')
 @section('content')
+    <section class="share-card">
+        <div><small>TAUTAN UNDANGAN ANDA</small><strong>{{ route('invitation.show', $invitation) }}</strong></div>
+        <a href="{{ route('invitation.show', $invitation) }}" target="_blank" class="primary-button">Buka Undangan ↗</a>
+    </section>
     <section class="stats-grid">
         <article><span>↙</span><div><small>Total Respons</small><strong>{{ $statistics['responses'] }}</strong></div></article>
         <article><span>✓</span><div><small>Tamu Hadir</small><strong>{{ $statistics['attending'] }}</strong></div></article>
         <article><span>×</span><div><small>Tidak Hadir</small><strong>{{ $statistics['notAttending'] }}</strong></div></article>
-        @can('manage-admins')<article><span>♙</span><div><small>Admin Pelanggan</small><strong>{{ $statistics['admins'] }}</strong></div></article>@endcan
     </section>
     <section class="panel">
         <div class="panel-title"><div><h2>RSVP & Ucapan Terbaru</h2><p>Konfirmasi yang dikirim melalui halaman undangan.</p></div></div>

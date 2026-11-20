@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\GuestMessage;
+use App\Models\Invitation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class GuestMessageFactory extends Factory
     public function definition(): array
     {
         return [
+            'invitation_id' => Invitation::factory(),
             'name' => fake()->name(),
             'attendance' => fake()->randomElement(['hadir', 'tidak_hadir', 'masih_ragu']),
             'guest_count' => fake()->numberBetween(1, 5),
