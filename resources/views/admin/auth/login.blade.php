@@ -9,7 +9,7 @@
 </head>
 <body class="login-page">
     <div class="login-card">
-        <a href="{{ route('invitation.show') }}" class="login-brand"><span>U</span> Undangan Digi</a>
+        <a href="{{ route('invitation.demo') }}" class="login-brand"><span>U</span> Undangan Digi</a>
         <p class="overline">Area pengelola</p><h1>Selamat datang kembali</h1><p>Masuk untuk mengelola RSVP dan akun pelanggan.</p>
         <form method="POST" action="{{ route('admin.login.store') }}" class="admin-form">
             @csrf

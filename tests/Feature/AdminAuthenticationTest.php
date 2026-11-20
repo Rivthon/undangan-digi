@@ -10,6 +10,15 @@ class AdminAuthenticationTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
+    public function test_guest_can_open_admin_login_page(): void
+    {
+        $response = $this->get(route('admin.login'));
+
+        $response->assertOk();
+        $response->assertSee('Selamat datang kembali');
+        $response->assertSee(route('invitation.demo'), false);
+    }
+
     public function test_guest_is_redirected_to_login_from_dashboard(): void
     {
         $this->get(route('admin.dashboard'))

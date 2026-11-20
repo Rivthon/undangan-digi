@@ -21,7 +21,7 @@
                 @else
                     <a href="{{ route('admin.invitation.edit') }}" @class(['active' => request()->routeIs('admin.invitation.*')])>✎ <span>Atur Undangan</span></a>
                 @endcan
-                <a href="{{ auth()->user()->isSuperAdmin() ? route('invitation.demo') : route('invitation.show', auth()->user()->invitation) }}" target="_blank">↗ <span>Lihat Undangan</span></a>
+                <a href="{{ auth()->user()->isSuperAdmin() || ! auth()->user()->invitation ? route('invitation.demo') : route('invitation.show', auth()->user()->invitation) }}" target="_blank">↗ <span>Lihat Undangan</span></a>
             </nav>
             <div class="sidebar-user">
                 <div class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</div>
